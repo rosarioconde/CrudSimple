@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pacientes</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+        integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="appPacientes" class="container">
+
+        <section class="form m-3">
+            <form action="" class="text-center">
+                <input v-model="nombre" @keyup.enter="crearPaciente" type="text" class="form-control"
+                    placeholder="Nombre">
+                <input v-model="edad" @keyup.enter="crearPaciente" type="number" name="edad" placeholder="Edad"
+                    class="form-control">
+
+                <input @click="crearPaciente" type="button" value="Añadir" class="btn btn-success p-2 m-2">
+            </form>
+        </section>
+        <!-- Tabla donde se muestran los datos -->
+        <section class="data">
+            <caption>Pacientes</caption>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">id</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Edad</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(paciente, index) in pacientes">
+                        <td>{{ paciente.id }}</td>
+                        <td>
+                            <span v-if="formActualizar && idActualizar == index">
+
+                                <input v-model="nombreActualizar" type="text" class="form-control">
+                            </span>
+                            <span v-else>
+
+                                {{ paciente.nombre }}
+                            </span>
+                        </td>
+                        <td>
+                            <span v-if="formActualizar && idActualizar == index">
+
+                                <input v-model="edadActualizar" type="text" class="form-control">
+                            </span>
+                            <span v-else>
+
+                                {{ paciente.edad }}
+                            </span>
+                        </td>
+                        <td>
+
+                            <span v-if="formActualizar && idActualizar == index">
+                                <button @click="guardarActualizacion(index)" class="btn btn-success">Guardar</button>
+                            </span>
+                            <span v-else>
+
+                                <button @click="verFormActualizar(index)" class="btn btn-warning">Actualizar</button>
+
+                                <button @click="borrarPaciente(index)" class="btn btn-danger">Borrar</button>
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            new Vue({
+                el: '#appPacientes',
+                data: {
+
+                    nombre: '',
+                    edad: '',
+                    formActualizar: false,
+                    idActualizar: -1,
+                    nombreActualizar: '',
+                    edadActualizar: '',
+                    // Lista de pacientes
+                    pacientes: []
+                },
+                methods: {
+                    crearPaciente: function () {
+                        this.pacientes.push({
+                            id: +new Date(),
+                            nombre: this.nombre,
+                            edad: this.edad
+                        });
+
+                        this.nombre = '';
+                        this.edad = '';
+                    },
+                    verFormActualizar: function (paciente_id) {
+                        this.idActualizar = paciente_id;
+                        this.nombreActualizar = this.pacientes[paciente_id].nombre;
+                        this.edadActualizar = this.pacientes[paciente_id].edad;
+
+                        this.formActualizar = true;
+                    },
+                    borrarPaciente: function (paciente_id) {
+
+                        this.pacientes.splice(paciente_id, 1);
+                    },
+                    guardarActualizacion: function (paciente_id) {
+
+                        this.formActualizar = false;
+
+                        this.pacientes[paciente_id].nombre = this.nombreActualizar;
+                        this.pacientes[paciente_id].edad = this.edadActualizar;
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
